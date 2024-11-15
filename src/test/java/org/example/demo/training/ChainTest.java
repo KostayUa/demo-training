@@ -8,11 +8,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ChainTest {
 
-
     @Nested
     class EmptyCollection {
 
-        Chain<String> chain = new Chain<>();
+        private final Chain<String> chain = new Chain<>();
 
         @Test
         public void collectionIsEmpty() {
@@ -49,14 +48,7 @@ public class ChainTest {
     @Nested
     class AddElementToEmptyCollection {
 
-        Chain<String> chain;
-
-        {
-            chain = new Chain<>();
-            chain.add(FIRST_ELEMENT);
-            chain.add(SECOND_ELEMENT);
-        }
-
+        private final Chain<String> chain = createChain(FIRST_ELEMENT, SECOND_ELEMENT);
 
         @Test
         public void collectionIsNotEmpty() {
@@ -102,53 +94,15 @@ public class ChainTest {
 
     }
 
-//    @Nested
-//    class RemoveFromIsEmptyCollection {
-//
-//        Chain<Integer> chain = new Chain<>();
-//
-//        @Test
-//        public void collectionIsEmpty() {
-//            assertTrue(chain.isEmpty());
-//        }
-//
-//        @Test
-//        public void sizeIsZero() {
-//            assertEquals(0, chain.size());
-//        }
-//
-//        @Test
-//        public void checkContainsOrderFromEmptyCollection() {
-//            assertTrue(isExactlyContains(chain));
-//        }
-//
-//        @Test
-//        @DisplayName("remove by index < 0")
-//        public void removeElementOutOfBounds() {
-//            assertThrows(IndexOutOfBoundsException.class, () -> chain.remove(-1));
-//        }
-//
-//        @Test
-//        @DisplayName("remove by index >= size")
-//        public void removeElementOutOfBounds2() {
-//            final int outOfBoundIndex = chain.size();
-//            assertThrows(IndexOutOfBoundsException.class, () -> chain.remove(outOfBoundIndex));
-//        }
-//
-//    }
-
     @Nested
     class RemoveFromIsNotEmptyCollection {
 
         @Nested
         class RemoveFistElement {
-            Chain<String> chain;
+            private final Chain<String> chain;
 
             {
-                chain = new Chain<>();
-                chain.add(FIRST_ELEMENT);
-                chain.add(SECOND_ELEMENT);
-                chain.add(THIRD_ELEMENT);
+                chain = createChain(FIRST_ELEMENT, SECOND_ELEMENT, THIRD_ELEMENT, FOURTH_ELEMENT, FIFTH_ELEMENT);
                 chain.remove(0);
             }
 
@@ -159,26 +113,75 @@ public class ChainTest {
 
             @Test
             public void sizeIsNotZero() {
-                assertEquals(2, chain.size());
+                assertEquals(4, chain.size());
             }
 
             @Test
             public void checkContainsOrderAfterRemove() {
-                assertTrue(isExactlyContains(chain, SECOND_ELEMENT, THIRD_ELEMENT));
+                assertTrue(isExactlyContains(chain, SECOND_ELEMENT, THIRD_ELEMENT, FOURTH_ELEMENT, FIFTH_ELEMENT));
             }
         }
 
         @Nested
-        class RemoveLastElement {
-            Chain<String> chain;
+        class RemoveSecondElement {
+
+            private final Chain<String> chain;
 
             {
-                chain = new Chain<>();
-                chain.add(FIRST_ELEMENT);
-                chain.add(SECOND_ELEMENT);
-                chain.add(THIRD_ELEMENT);
-                final int lastIndex = chain.size() - 1;
-                chain.remove(lastIndex);
+                chain = createChain(FIRST_ELEMENT, SECOND_ELEMENT, THIRD_ELEMENT, FOURTH_ELEMENT, FIFTH_ELEMENT);
+                chain.remove(1);
+            }
+
+            @Test
+            public void collectionIsEmpty() {
+                assertFalse(chain.isEmpty());
+            }
+
+            @Test
+            public void sizeIsNotZero() {
+                final int expectedSize = 4;
+                assertEquals(expectedSize, chain.size());
+            }
+
+            @Test
+            public void checkContainsOrderAfterRemove() {
+                assertTrue(isExactlyContains(chain, FIRST_ELEMENT, THIRD_ELEMENT, FOURTH_ELEMENT, FIFTH_ELEMENT));
+            }
+        }
+
+        @Nested
+        class RemoveThirdElement {
+            private final Chain<String> chain;
+
+            {
+                chain = createChain(FIRST_ELEMENT, SECOND_ELEMENT, THIRD_ELEMENT, FOURTH_ELEMENT, FIFTH_ELEMENT);
+                chain.remove(2);
+            }
+
+            @Test
+            public void collectionIsEmpty() {
+                assertFalse(chain.isEmpty());
+            }
+
+            @Test
+            public void sizeIsNotZero() {
+                final int expectedSize = 4;
+                assertEquals(expectedSize, chain.size());
+            }
+
+            @Test
+            public void checkContainsOrderAfterRemove() {
+                assertTrue(isExactlyContains(chain, FIRST_ELEMENT, SECOND_ELEMENT, FOURTH_ELEMENT, FIFTH_ELEMENT));
+            }
+        }
+
+        @Nested
+        class RemoveFourthElement {
+            private final Chain<String> chain;
+
+            {
+                chain = createChain(FIRST_ELEMENT, SECOND_ELEMENT, THIRD_ELEMENT, FOURTH_ELEMENT, FIFTH_ELEMENT);
+                chain.remove(3);
             }
 
             @Test
@@ -188,25 +191,48 @@ public class ChainTest {
 
             @Test
             public void sizeIsNotZero() {
-                final int expectedSize = 2;
+                final int expectedSize = 4;
                 assertEquals(expectedSize, chain.size());
             }
 
             @Test
             public void checkContainsOrderAfterRemove() {
-                assertTrue(isExactlyContains(chain, FIRST_ELEMENT, SECOND_ELEMENT));
+                assertTrue(isExactlyContains(chain, FIRST_ELEMENT, SECOND_ELEMENT, THIRD_ELEMENT, FIFTH_ELEMENT));
+            }
+        }
+
+        @Nested
+        class RemoveFifthElement {
+            private final Chain<String> chain;
+
+            {
+                chain = createChain(FIRST_ELEMENT, SECOND_ELEMENT, THIRD_ELEMENT, FOURTH_ELEMENT, FIFTH_ELEMENT);
+                chain.remove(4);
+            }
+
+            @Test
+            public void collectionIsNotEmpty() {
+                assertFalse(chain.isEmpty());
+            }
+
+            @Test
+            public void sizeIsNotZero() {
+                final int expectedSize = 4;
+                assertEquals(expectedSize, chain.size());
+            }
+
+            @Test
+            public void checkContainsOrderAfterRemove() {
+                assertTrue(isExactlyContains(chain, FIRST_ELEMENT, SECOND_ELEMENT, THIRD_ELEMENT, FOURTH_ELEMENT));
             }
         }
 
         @Nested
         class RemoveAllElement {
-            Chain<String> chain;
+            private final Chain<String> chain;
 
             {
-                chain = new Chain<>();
-                chain.add(FIRST_ELEMENT);
-                chain.add(SECOND_ELEMENT);
-                chain.add(THIRD_ELEMENT);
+                chain = createChain(FIRST_ELEMENT, SECOND_ELEMENT, THIRD_ELEMENT);
                 chain.remove(0);
                 chain.remove(0);
                 chain.remove(0);
@@ -224,44 +250,8 @@ public class ChainTest {
         }
 
         @Nested
-        class RemoveMidElement {
-            Chain<String> chain;
-
-            {
-                chain = new Chain<>();
-                chain.add(FIRST_ELEMENT);
-                chain.add(SECOND_ELEMENT);
-                chain.add(THIRD_ELEMENT);
-                chain.remove(1);
-            }
-
-            @Test
-            public void collectionIsEmpty() {
-                assertFalse(chain.isEmpty());
-            }
-
-            @Test
-            public void sizeIsNotZero() {
-                final int expectedSize = 2;
-                assertEquals(expectedSize, chain.size());
-            }
-
-            @Test
-            public void checkContainsOrderAfterRemove() {
-                assertTrue(isExactlyContains(chain, FIRST_ELEMENT, THIRD_ELEMENT));
-            }
-        }
-
-        @Nested
         class RemoveElementOutOfBounds {
-            Chain<String> chain;
-
-            {
-                chain = new Chain<>();
-                chain.add(FIRST_ELEMENT);
-                chain.add(SECOND_ELEMENT);
-                chain.add(THIRD_ELEMENT);
-            }
+            private final Chain<String> chain = createChain(FIRST_ELEMENT, SECOND_ELEMENT, THIRD_ELEMENT);
 
             @Test
             @DisplayName("remove by index < 0")
@@ -293,7 +283,22 @@ public class ChainTest {
         return true;
     }
 
+    private <T> int lastElementIndex(Chain<T> chain) {
+        return chain.size() - 1;
+    }
+
+    private Chain<String> createChain(String... items) {
+        final Chain<String> chain = new Chain<>();
+        for (String item : items) {
+            chain.add(item);
+        }
+        return chain;
+    }
+
     private final static String FIRST_ELEMENT = "first";
     private final static String SECOND_ELEMENT = "second";
     private final static String THIRD_ELEMENT = "third";
+    private final static String FOURTH_ELEMENT = "fourth";
+    private final static String FIFTH_ELEMENT = "fifth";
+
 }

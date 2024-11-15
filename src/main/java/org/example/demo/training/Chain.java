@@ -1,8 +1,8 @@
 package org.example.demo.training;
 
 public class Chain<T> {
-    private Node<T> head;
-    private Node<T> tail;
+    private Node<T> first;
+    private Node<T> last;
     private int size;
 
     private static class Node<T> {
@@ -18,69 +18,23 @@ public class Chain<T> {
 
     public void add(T data) {
         Node<T> newNode = new Node<>(data);
-        if (head == null) {
-            head = newNode;
-            tail = newNode;
+        if (first == null) {
+            first = newNode;
         } else {
-            tail.next = newNode;
-            newNode.previous = tail;
-            tail = newNode;
+            last.next = newNode;
+            newNode.previous = last;
         }
+        last = newNode;
         size++;
     }
 
-//    public Optional<T> getFirst() {
-//        if (head == null) {
-//            return Optional.empty();
-//        }
-//        return Optional.of(head.data);
-//    }
-//
-//    public Optional<T> getLast() {
-//        if (tail == null) {
-//            return Optional.empty();
-//        } else {
-//            return Optional.of(tail.data);
-//        }
-//    }
-
     public T get(int index) {
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("Index out of bounds");
-        }
-        Node<T> current = head;
-        for (int i = 0; i < index; i++) {
-            current = current.next;
-        }
-        return current.data;
+        return findElement(index).data;
     }
 
+    //TODO
     public void remove(int index) {
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("Index out of bounds");
-        }
-        if (index == 0) {
-            head = head.next;
-            if (head != null) {
-                head.previous = null;
-            } else {
-                tail = null;
-            }
-        } else if (index == size - 1) {
-            tail = tail.previous;
-            if (tail != null) {
-                tail.next = null;
-            } else {
-                head = null;
-            }
-        } else {
-            Node<T> current = head;
-            for (int i = 0; i < index; i++) {
-                current = current.next;
-            }
-            current.previous.next = current.next;
-            current.next.previous = current.previous;
-        }
+        removeMidElement3(index);
         size--;
     }
 
@@ -90,5 +44,45 @@ public class Chain<T> {
 
     public boolean isEmpty() {
         return size == 0;
+    }
+
+    private Node<T> findElement(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index out of bounds");
+        }
+        int mid = NumberUtils.mid(size);
+        Node<T> current;
+        if (index < mid) {
+            // left
+            current = first;
+            for (int i = 0; i < index; i++) {
+                current = current.next;
+            }
+        } else {
+            // right
+            current = last;
+            for (int i = size() - 1; i > index; i--) {
+                current = current.previous;
+            }
+        }
+        return current;
+    }
+
+    private void removeMidElement3(int index) {
+        Node<T> current = findElement(index);
+        Node<T> previous = current.previous;
+        Node<T> next = current.next;
+        if (previous != null) {
+            previous.next = next;
+        }
+        if (next != null) {
+            next.previous = previous;
+        }
+        if (first == current) {
+            first = next;
+        }
+        if (last == current) {
+            last = previous;
+        }
     }
 }
