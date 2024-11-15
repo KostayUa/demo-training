@@ -46,26 +46,46 @@ public class Chain<T> {
         return size == 0;
     }
 
+    private boolean needLeftToRight(int index) {
+        int mid = NumberUtils.mid(size);
+        return index < mid;
+    }
+
     private Node<T> findElement(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("Index out of bounds");
         }
-        int mid = NumberUtils.mid(size);
         Node<T> current;
-        if (index < mid) {
-            // left
-            current = first;
-            for (int i = 0; i < index; i++) {
-                current = current.next;
-            }
+        if (needLeftToRight(index)) {
+//            current = first;
+//            for (int i = 0; i < index; i++) {
+//                current = current.next;
+//            }
+            current = toRight(first, index, 0);
         } else {
-            // right
-            current = last;
-            for (int i = size() - 1; i > index; i--) {
-                current = current.previous;
-            }
+//            current = last;
+//            for (int i = size() - 1; i > index; i--) {
+//                current = current.previous;
+//            }
+            current = toLeft(last, index, size - 1);
         }
         return current;
+    }
+
+    private Node<T> toRight(Node<T> current, int index, int currentIndex) {
+        if (currentIndex < index) {
+            return toRight(current.next, index, currentIndex + 1);
+        } else {
+            return current;
+        }
+    }
+
+    private Node<T> toLeft(Node<T> current, int index, int currentIndex) {
+        if (currentIndex > index) {
+            return toLeft(current.previous, index, currentIndex - 1);
+        } else {
+            return current;
+        }
     }
 
     private void removeMidElement3(int index) {
