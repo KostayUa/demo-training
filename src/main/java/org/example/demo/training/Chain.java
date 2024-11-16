@@ -32,9 +32,9 @@ public class Chain<T> {
         return findElement(index).data;
     }
 
-    //TODO
     public void remove(int index) {
-        removeMidElement3(index);
+//        Node<T> current = findElement(index);
+        removeElement(findElement(index));
         size--;
     }
 
@@ -88,8 +88,7 @@ public class Chain<T> {
         }
     }
 
-    private void removeMidElement3(int index) {
-        Node<T> current = findElement(index);
+    private void removeElement(Node<T> current) {
         Node<T> previous = current.previous;
         Node<T> next = current.next;
         if (previous != null) {
